@@ -6,9 +6,11 @@ emailBoxTemplate.innerHTML =
     <div class="media-content">
         <div class="content">
         <p>
-            <strong>From: <span class="sender-name">John Smith</span></strong> <small><span class="sender-email">email@email.com</span></small> <small><span class="email-duration">31m</span></small>
+            On Queue: <small><span class="email-duration">31m</span></small>
             <br>
-            <strong>Subject: <span class="email-subject">Subject</span></strong>
+            From: <strong><span class="sender-name">John Smith</span></strong> <small><span class="sender-email">email@email.com</span></small> 
+            <br>
+            Subject: <strong><span class="email-subject">Subject</span></strong>
             <br>
             <div class="email-body">
                 Body of email
