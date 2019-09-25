@@ -20,7 +20,7 @@ emailBoxTemplate.innerHTML =
         </p>
         </div>
         <div>
-            <a class="button is-dark">Assign To Me</a>
+            <a class="button is-dark btn-assign" onclick="assignEmailToAgent()">Assign To Me</a>
         </div>
     </div>
     </article>
@@ -43,6 +43,7 @@ export default {
         let emailDuration = emailViewElement.getElementsByClassName('email-duration')[0];
         let emailSubject = emailViewElement.getElementsByClassName('email-subject')[0];
         let emailBody = emailViewElement.getElementsByClassName('email-body')[0];
+        let btnAssign = emailViewElement.getElementsByClassName('btn-assign')[0];
         
         // Assign values
         senderName.textContent = emailData.senderName ? emailData.senderName : null;
@@ -50,6 +51,13 @@ export default {
         emailDuration.textContent = emailData.emailDuration ? emailData.emailDuration : null;
         emailSubject.textContent = emailData.emailSubject ? emailData.emailSubject : null;
         emailBody.textContent = emailData.emailBody ? emailData.emailBody : null;
+
+        // Assign onlcick action to button
+        btnAssign.setAttribute('onclick', 
+                    'assignEmailToAgent(' + 
+                        `"${emailData.conversationId}",` +
+                        `"${emailData.acdParticipant}",` +
+                    ')'); 
     },
 
     showLoader(){

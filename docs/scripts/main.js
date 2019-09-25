@@ -6,15 +6,26 @@ const client = platformClient.ApiClient.instance;
 // OAuth 
 const redirectUri = window.location.href;
 const clientId = "e7de8a75-62bb-43eb-9063-38509f8c21af";
+
 const queueId = "9f7ae000-70ce-4afd-9bbd-746f5a4d7163";
 
 // API instances
 const analyticsApi = new platformClient.AnalyticsApi();
 const conversationsApi = new platformClient.ConversationsApi();
+const usersApi = new platformClient.UsersApi();
+
+// User Values
+let userId = null;
 
 client.loginImplicitGrant(clientId, redirectUri)
 .then((data) => {
     console.log(data);
+
+
+    return usersApi.getUsersMe();
+})
+.then((me) => {
+    userId = me.id;
 
     // Query open email conversations from the queue
     return getUnansweredEmailsFromQueue(queueId);
@@ -129,11 +140,14 @@ function buildEmailInformation(conversationsData){
                     "senderEmail": senderEmail,
                     "emailDuration": emailDuration,
                     "emailSubject": emailSubject,
-                    "emailBody": emailBody
+                    "emailBody": emailBody,
+                    "conversationId": conversation.conversationId,
+                    "acdParticipant": conversation.participants
+                                        [conversation.participants.length - 1].participantId
                 })
             })
             .catch((err) => {
-                console.log('Oh Shit');
+                console.log('Something went wrong');
                 console.error(err);
                 reject(err);
             });
@@ -143,6 +157,12 @@ function buildEmailInformation(conversationsData){
     return Promise.all(emails);
 }
 
-function assignEmailToAgent(conversationId, userId){
-    
+function assignEmailToAgent(conversationId, acdParticipantId){
+    let body = {
+        "userId": userId,
+    };
+    conversationsApi.postConversationParticipantReplace(conversationId, acdParticipantId, body);
 }
+
+// Global assignment
+window.assignEmailToAgent = assignEmailToAgent;
