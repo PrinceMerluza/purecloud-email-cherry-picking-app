@@ -1,0 +1,7 @@
+.box {
+    margin: 10px;
+}
+
+.box:not(:last-child) {
+    margin-bottom: 0;
+}
