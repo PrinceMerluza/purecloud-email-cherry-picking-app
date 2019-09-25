@@ -1,4 +1,6 @@
 const emailContainer = document.getElementById('email-container');
+const loader = document.getElementById('loader-icon');
+
 let emailBoxTemplate = document.createElement('template');
 emailBoxTemplate.innerHTML =
 `<div class="box">
@@ -48,5 +50,13 @@ export default {
         emailDuration.textContent = emailData.emailDuration ? emailData.emailDuration : null;
         emailSubject.textContent = emailData.emailSubject ? emailData.emailSubject : null;
         emailBody.textContent = emailData.emailBody ? emailData.emailBody : null;
+    },
+
+    showLoader(){
+        loader.style.display = 'block';
+    },
+
+    hideLoader(){
+        loader.style.display = 'none';
     }
 }

@@ -24,7 +24,8 @@ client.loginImplicitGrant(clientId, redirectUri)
     return buildEmailInformation(conversations);
 })
 .then((emails) => {
-    // Show the email info on the document
+    // Show the emails info on the document
+    view.hideLoader();
     emails.forEach((email) => view.addEmailBox(email));
 })
 .catch((err) => {
@@ -91,7 +92,7 @@ function buildEmailInformation(conversationsData){
             let senderEmail = '<No Email>';
             let emailSubject = '<No Subject>';
             let emailBody = '<No Body>';
-            
+
             // Get duration from conversation start
             let durationMinutes = moment.duration(
                 moment().utc().diff(moment(conversation.conversationStart))).as('minutes');
@@ -140,4 +141,8 @@ function buildEmailInformation(conversationsData){
     }
 
     return Promise.all(emails);
+}
+
+function assignEmailToAgent(conversationId, userId){
+    
 }
