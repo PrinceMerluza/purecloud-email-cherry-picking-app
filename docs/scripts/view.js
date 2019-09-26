@@ -1,5 +1,7 @@
 const emailContainer = document.getElementById('email-container');
 const loader = document.getElementById('loader-icon');
+const loaderText = document.getElementById('loader-text');
+const noEmailText = document.getElementById('no-emails');
 
 let emailBoxTemplate = document.createElement('template');
 emailBoxTemplate.innerHTML =
@@ -35,6 +37,7 @@ export default {
         // Add the email box to the DOM
         let emailView = document.importNode(emailBoxTemplate.content, true);
         let emailViewElement = emailView.firstChild;
+        emailViewElement.id = emailData.conversationId;
         emailContainer.appendChild(emailView);
 
         // Get references to dynamic elements
@@ -60,11 +63,38 @@ export default {
                     ')'); 
     },
 
-    showLoader(){
+    /**
+     * Hide an email box when user assigns it to agent
+     * @param {String} id 
+     */
+    hideEmailBox(id){
+        document.getElementById(id).style.display = 'none';
+    },
+
+    showLoader(text){
         loader.style.display = 'block';
+        emailContainer.style.display = 'none';
+
+        loaderText.textContent = text ? text : 'Loading...';
     },
 
     hideLoader(){
         loader.style.display = 'none';
-    }
+        emailContainer.style.display = 'block';
+
+    },
+
+    clearEmailContainer(){
+        while(emailContainer.firstChild) {
+            emailContainer.firstChild.remove();
+        }
+    },
+    
+    showBlankEmails(){
+        noEmailText.style.display = 'block';
+    },
+
+    hideBlankEmails(){
+        noEmailText.style.display = 'none';
+    },
 }

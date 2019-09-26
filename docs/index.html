@@ -29,12 +29,23 @@
       </div>
     </div>
   </section>
+  <section style="margin: 10px;">
+      <a onclick="refreshEmails();" class="button is-primary is-outlined is-fullwidth">
+        <span>Refresh</span>&nbsp;<i class="fa fa-refresh" aria-hidden="true"></i> 
+      </a>
+  </section>
+  <section id="loader-icon">
+      <div>
+        <i class="fas fa-cog fa-spin"></i>
+        <br>
+        <span id="loader-text">Loading...</span>
+      </div>
+  </section>
+  <section id="no-emails" style="display: none;">
+    <div>Nothing to show here</div> 
+  </section>
   <section id="email-container">
-    <div id="loader-icon">
-      <i class="fas fa-cog fa-spin"></i>
-      <br>
-      Gathering Emails...
-    </div>
+    
   </section>
 </body>
 </html>

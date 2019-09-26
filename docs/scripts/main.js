@@ -21,23 +21,12 @@ client.loginImplicitGrant(clientId, redirectUri)
 .then((data) => {
     console.log(data);
 
-
     return usersApi.getUsersMe();
 })
 .then((me) => {
     userId = me.id;
 
-    // Query open email conversations from the queue
-    return getUnansweredEmailsFromQueue(queueId);
-})
-.then((conversations) => {
-    // mutate the information from emails to prepare for viewing
-    return buildEmailInformation(conversations);
-})
-.then((emails) => {
-    // Show the emails info on the document
-    view.hideLoader();
-    emails.forEach((email) => view.addEmailBox(email));
+    return refreshEmails();
 })
 .catch((err) => {
     console.log(err);
@@ -95,8 +84,13 @@ function getUnansweredEmailsFromQueue(queueId){
 
 function buildEmailInformation(conversationsData){
     let emails = [];
+    console.log(conversationsData);
+    if(!conversationsData.conversations) return [];
 
     for(let conversation of conversationsData.conversations){
+        // If not acd skip, because it might be received by an agent
+        if (conversation.participants[conversation.participants.length - 1].purpose != 'acd') continue;
+
         emails.push(new Promise((resolve, reject) => {
             // Default Values
             let senderName = '<No Name>';
@@ -158,11 +152,47 @@ function buildEmailInformation(conversationsData){
 }
 
 function assignEmailToAgent(conversationId, acdParticipantId){
+    view.showLoader('Assigning Email...');
+
     let body = {
         "userId": userId,
     };
-    conversationsApi.postConversationParticipantReplace(conversationId, acdParticipantId, body);
+    conversationsApi.postConversationParticipantReplace(conversationId, acdParticipantId, body)
+    .then((data) => {
+
+        view.hideEmailBox(conversationId);
+        view.hideLoader();
+    })
+    .catch((err) => {
+        console.log(err);
+    });
+}
+
+function refreshEmails(){
+    view.showLoader('Gathering Emails...');
+    view.clearEmailContainer();
+    view.hideBlankEmails();
+
+    return getUnansweredEmailsFromQueue(queueId)
+    .then((conversations) => {
+        // mutate the information from emails to prepare for viewing
+        return buildEmailInformation(conversations);
+    })
+    .then((emails) => {
+        // Show the emails info on the document
+        view.hideLoader();
+
+        if(emails.length <= 0){
+            view.showBlankEmails();
+        }else{
+            emails.forEach((email) => view.addEmailBox(email));
+        }
+    })
+    .catch((err) => {
+        console.log(err);
+    });
 }
 
 // Global assignment
 window.assignEmailToAgent = assignEmailToAgent;
+window.refreshEmails = refreshEmails;
