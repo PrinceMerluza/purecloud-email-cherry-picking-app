@@ -13,6 +13,7 @@ const queueId = "9f7ae000-70ce-4afd-9bbd-746f5a4d7163";
 const analyticsApi = new platformClient.AnalyticsApi();
 const conversationsApi = new platformClient.ConversationsApi();
 const usersApi = new platformClient.UsersApi();
+const notificationsApi = new platformClient.NotificationsApi();
 
 // User Values
 let userId = null;
@@ -21,12 +22,18 @@ client.loginImplicitGrant(clientId, redirectUri)
 .then((data) => {
     console.log(data);
 
+    // Get User Info
     return usersApi.getUsersMe();
 })
 .then((me) => {
     userId = me.id;
 
+    // Get Available Emails    
     return refreshEmails();
+})
+.then(() => {
+    // Set up queue listener
+    return setQueueListener();
 })
 .catch((err) => {
     console.log(err);
@@ -170,7 +177,6 @@ function assignEmailToAgent(conversationId, acdParticipantId){
 
 function refreshEmails(){
     view.showLoader('Gathering Emails...');
-    view.clearEmailContainer();
     view.hideBlankEmails();
 
     return getUnansweredEmailsFromQueue(queueId)
@@ -180,6 +186,7 @@ function refreshEmails(){
     })
     .then((emails) => {
         // Show the emails info on the document
+        view.clearEmailContainer();
         view.hideLoader();
 
         if(emails.length <= 0){
@@ -190,6 +197,34 @@ function refreshEmails(){
     })
     .catch((err) => {
         console.log(err);
+    });
+}
+
+function setQueueListener(){
+    let channel = {};
+    let topicId = `v2.routing.queues.${queueId}.conversations.emails`;
+
+    notificationsApi.postNotificationsChannels()
+    .then((data) => {
+        channel = data;
+
+        return notificationsApi.putNotificationsChannelSubscriptions(
+                                channel.id, [{'id': topicId}]);
+    })
+    .then(() => {
+        console.log("Subscribed to Queue!");
+
+        let webSocket = new WebSocket(channel.connectUri);
+        webSocket.onmessage = function(event){
+            let msg = JSON.parse(event.data);
+            if((msg.topicName == topicId) && (msg.eventBody.participants.length == 3)){
+                setTimeout(refreshEmails, 3000);
+            }
+        }
+    })
+    .catch((err) => {
+        console.log('There was a failure.');
+        console.error(err);
     });
 }
 

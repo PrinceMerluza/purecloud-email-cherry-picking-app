@@ -1,0 +1,17 @@
+Sender Name
+Sender Email
+Time Date
+
+Subject
+Body (Preview)
+Attachements (#)
+
+
+-----
+when trying to assign, recheck email is still available and not already assigned to another
+
+7 days ago duration limit
+100 page size limit on analaytics query
+
+beter suited for no-reply email backs
+
