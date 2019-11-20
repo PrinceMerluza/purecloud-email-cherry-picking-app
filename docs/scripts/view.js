@@ -57,10 +57,10 @@ export default {
 
         // Assign onlcick action to button
         btnAssign.setAttribute('onclick', 
-                    'assignEmailToAgent(' + 
-                        `"${emailData.conversationId}",` +
-                        `"${emailData.acdParticipant}",` +
-                    ')'); 
+            'assignEmailToAgent(' + 
+                `"${emailData.conversationId}",` +
+                `"${emailData.acdParticipant}",` +
+            ')'); 
     },
 
     /**
@@ -71,6 +71,10 @@ export default {
         document.getElementById(id).style.display = 'none';
     },
 
+    /**
+     * Shows the loader/spinner in the page
+     * @param {String} text Loading Text
+     */
     showLoader(text){
         loader.style.display = 'block';
         emailContainer.style.display = 'none';
@@ -78,23 +82,35 @@ export default {
         loaderText.textContent = text ? text : 'Loading...';
     },
 
+    /**
+     * Hide the loader/spinner
+     */
     hideLoader(){
         loader.style.display = 'none';
         emailContainer.style.display = 'block';
 
     },
 
+    /**
+     * Removes all Email panels from the container
+     */
     clearEmailContainer(){
         while(emailContainer.firstChild) {
             emailContainer.firstChild.remove();
         }
     },
     
+    /**
+     * Show message that informs that there are no available emails
+     */
     showBlankEmails(){
         noEmailText.style.display = 'block';
     },
 
+    /**
+     * Hide message that informs that there are no available emails
+     */
     hideBlankEmails(){
         noEmailText.style.display = 'none';
     },
-}
+};
