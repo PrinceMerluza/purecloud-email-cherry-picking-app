@@ -26,7 +26,7 @@ let userId = null;
  */
 function getUnansweredEmailsFromQueue(queueId){
     let intervalTo = moment().utc().add(1, 'h');
-    let intervalFrom = intervalTo.clone().subtract(7, 'days');
+    let intervalFrom = intervalTo.clone().subtract(30, 'days');
     let intervalString = intervalFrom.format() + '/' + intervalTo.format();
     
     let queryBody = {
